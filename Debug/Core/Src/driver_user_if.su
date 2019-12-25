@@ -1,0 +1,10 @@
+driver_user_if.c:41:6:message_buffer_init	8	static
+driver_user_if.c:60:6:enqueue	16	static,ignoring_inline_asm
+driver_user_if.c:75:10:dequeue	16	static
+driver_user_if.c:97:6:CAN_Filter_Init	8	static
+driver_user_if.c:132:9:CAN_Send	24	static
+driver_user_if.c:176:9:USB_Send	24	static
+driver_user_if.c:203:6:HAL_CAN_TxMailbox0CompleteCallback	16	static
+driver_user_if.c:208:6:HAL_CAN_RxFifo0MsgPendingCallback	16	static
+driver_user_if.c:227:6:HAL_CAN_ErrorCallback	16	static
+driver_user_if.c:232:6:USB_Receive_Callback	24	static
