@@ -16,6 +16,7 @@
 #define CMD_END       (0x500)
 //#define CMD_MASK_ANY  (0)
 
+
 typedef enum
 {
 	rx_flash_update = CMD_UPDATE,

@@ -100,6 +100,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   CAN_Filter_Init();
   message_buffer_init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

@@ -75,4 +75,5 @@ extern can_message_t can_rx_buf;
 extern volatile bool g_usb_rx_complete;
 extern volatile bool g_can_rx_complete;
 
+
 #endif /* INC_DRIVER_USER_IF_H_ */
