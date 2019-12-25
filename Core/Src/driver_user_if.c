@@ -1,5 +1,5 @@
 /*
- * usb_user_if.c
+ * driver_user_if.c
  *
  *  Created on: 2019年12月11日
  *      Author: Jingtai_Wu
@@ -10,6 +10,7 @@
 
 extern USBD_HandleTypeDef hUsbDeviceFS;
 extern CAN_HandleTypeDef hcan;
+extern TIM_HandleTypeDef htim3;
 extern uint8_t USBD_CUSTOM_HID_SendReport(USBD_HandleTypeDef *pdev,
 		uint8_t *report, uint16_t len);
 
@@ -23,6 +24,7 @@ volatile bool g_usb_rx_complete;
 volatile bool g_can_rx_complete;
 
 volatile static uint8_t can_tx_complete;
+volatile static uint16_t tim3_cnt;
 static CAN_FilterTypeDef sFilterConfig;
 static CAN_TxHeaderTypeDef can_tx_hd;
 static CAN_RxHeaderTypeDef can_rx_hd;
@@ -85,6 +87,27 @@ q_status dequeue(queue_t *Q, usb_message_t *tx_msg)
 		memcpy(tx_msg->packet, Q->data[Q->front], 64);
 		return q_full;
 	}
+}
+
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : TIM32_DelayMS
+ * Description   : 1ms-unit delay
+ * Implements    :
+ *END**************************************************************************/
+
+void TIM32_DelayMS(unsigned int ms)
+{
+    /* timer start*/
+    HAL_TIM_Base_Start_IT(&htim3);
+    tim3_cnt = 0;
+    while(tim3_cnt < ms);
+
+    /* timer stop and reset */
+    while(HAL_TIM_Base_Stop_IT(&htim3) != HAL_OK);
+    htim3.Instance->EGR = 0x0001;
+    htim3.Instance->CNT = 0;
 }
 
 /*FUNCTION**********************************************************************
@@ -239,4 +262,12 @@ void USB_Receive_Callback(uint8_t event_idx, uint8_t state)
 #ifdef __DEBUG_PRINTF__
 	printf("usb data received!\n");
 #endif
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if(htim->Instance == TIM3)
+    {
+        tim3_cnt++;
+    }
 }

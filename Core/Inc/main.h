@@ -33,6 +33,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usb_device.h"
+#include "stm32f0xx_hal_tim.h"
 #include <driver_user_if.h>
 #include <stdbool.h>
 /* USER CODE END Includes */
@@ -59,6 +60,7 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define CUSTOM_HID_FS_BINTERVAL 0x01
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

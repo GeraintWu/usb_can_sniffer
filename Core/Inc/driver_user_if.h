@@ -66,6 +66,7 @@ void CAN_Filter_Init(void);
 uint8_t CAN_Send(can_message_t *message);
 void enqueue(queue_t *, uint8_t *tx_msg);
 q_status dequeue(queue_t *, usb_message_t *tx_msg);
+void TIM32_DelayMS(unsigned int ms);
 
 extern usb_message_t usb_tx_buf;
 extern queue_t Q;

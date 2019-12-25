@@ -1,4 +1,4 @@
-"Core/Src/downloader.o"
+"Core/Src/data_streaming.o"
 "Core/Src/driver_user_if.o"
 "Core/Src/main.o"
 "Core/Src/stm32f0xx_hal_msp.o"
