@@ -15,22 +15,22 @@ extern uint8_t USBD_CUSTOM_HID_SendReport(USBD_HandleTypeDef *pdev,
 		uint8_t *report, uint16_t len);
 
 usb_message_t usb_tx_buf;
-queue_t Q;
 usb_message_t usb_rx_buf;
 can_message_t can_tx_buf;
 can_message_t can_rx_buf;
+queue_t Q;
 
 volatile bool g_usb_rx_complete;
 volatile bool g_can_rx_complete;
-
 volatile static uint8_t can_tx_complete;
 volatile static uint16_t tim3_cnt;
+
 static CAN_FilterTypeDef sFilterConfig;
 static CAN_TxHeaderTypeDef can_tx_hd;
 static CAN_RxHeaderTypeDef can_rx_hd;
 static uint32_t messagebox;
 static uint8_t pre_queue[64];
-static uint8_t *pre_q;
+static uint8_t *pre_q_ptr;
 static uint8_t pre_q_cnt;
 
 /*FUNCTION**********************************************************************
@@ -47,7 +47,7 @@ void message_buffer_init(void)
 	usb_tx_buf.msg.pdata = usb_tx_buf.msg.payload;
 	can_rx_buf.pdata = usb_tx_buf.msg.payload;
 
-	pre_q = pre_queue;
+	pre_q_ptr = pre_queue;
 	pre_q_cnt = 0;
 	Q.front = 0;
 	Q.rear = 0;
@@ -70,25 +70,54 @@ void enqueue(queue_t *Q, uint8_t *tx_msg)
 	else
 	{
 		Q->rear = (Q->rear + 1) % Q_MAX_SIZE;
-		memcpy(Q->data[Q->rear], tx_msg, 64);
+		memcpy(Q->data[Q->rear], tx_msg, USB_PACKET_SIZE);
 	}
 }
 
 q_status dequeue(queue_t *Q, usb_message_t *tx_msg)
 {
+
 	if (Q->front == Q->rear)
 	{
+		/*
+		 * when Q is emepty, we need to check if data
+		 * has been queued in the pre_queue over a period of time.
+		 * send them out and reset the pre_q_cnt
+		 */
+		if ((tim3_cnt > PRE_Q_PERIOD) && (pre_q_cnt != 0))
+		{
+			//stop & clear Timer
+			TIM32_Stop();
+
+			//To grab data from pre_queue
+#if 0
+			memcpy(tx_msg->packet.payload, pre_queue, USB_PACKET_SIZE);
+			tx_msg->packet.pk_length = pre_q_cnt * PRE_Q_LENGTH;
+#else
+			memset(tx_msg->packet.payload, 0, USB_PACKET_SIZE);
+			memcpy(tx_msg->packet.payload, pre_queue, pre_q_cnt * PRE_Q_LENGTH);
+			tx_msg->packet.pk_length = USB_PACKET_SIZE;
+#endif
+			//reset pre_q
+			pre_q_ptr = pre_queue;
+			pre_q_cnt = 0;
+
+			return q_full;
+		}
 		//printf("Queue is empty!\n");
 		return q_empty;
 	}
 	else
 	{
+		//stop & clear Timer
+		TIM32_Stop();
+
 		Q->front = (Q->front + 1) % Q_MAX_SIZE;
-		memcpy(tx_msg->packet, Q->data[Q->front], 64);
+		memcpy(tx_msg->packet.payload, Q->data[Q->front], USB_PACKET_SIZE);
+		tx_msg->packet.pk_length = USB_PACKET_SIZE;
 		return q_full;
 	}
 }
-
 
 /*FUNCTION**********************************************************************
  *
@@ -96,7 +125,7 @@ q_status dequeue(queue_t *Q, usb_message_t *tx_msg)
  * Description   : 1ms-unit delay
  * Implements    :
  *END**************************************************************************/
-
+#if 0
 void TIM32_DelayMS(unsigned int ms)
 {
     /* timer start*/
@@ -108,6 +137,16 @@ void TIM32_DelayMS(unsigned int ms)
     while(HAL_TIM_Base_Stop_IT(&htim3) != HAL_OK);
     htim3.Instance->EGR = 0x0001;
     htim3.Instance->CNT = 0;
+}
+#endif
+
+void TIM32_Stop(void)
+{
+	/* timer stop and reset */
+	while (HAL_TIM_Base_Stop_IT(&htim3) != HAL_OK)
+		;
+	htim3.Instance->EGR = 0x0001;
+	htim3.Instance->CNT = 0;
 }
 
 /*FUNCTION**********************************************************************
@@ -136,7 +175,7 @@ void CAN_Filter_Init(void)
 	}
 
 	if (HAL_CAN_ActivateNotification(&hcan,
-			CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_TX_MAILBOX_EMPTY) != HAL_OK)
+	CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_TX_MAILBOX_EMPTY) != HAL_OK)
 	{
 		/* Notification Error */
 		Error_Handler();
@@ -203,7 +242,8 @@ uint8_t USB_Send(usb_message_t *message)
 
 	tickstart = HAL_GetTick();
 
-	while (USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t*) message, 64)
+	while (USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS,
+			(uint8_t*) message->packet.payload, message->packet.pk_length)
 			!= USBD_OK)
 	{
 		if ((HAL_GetTick() - tickstart) > COMM_TIMEOUT)
@@ -227,21 +267,27 @@ void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan)
 {
 	can_tx_complete = 1;
 }
-uint32_t rx_cnt = 0;
+
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &can_rx_hd, can_rx_buf.pdata);
 	usb_tx_buf.msg.cmd = can_rx_hd.ExtId;
 	usb_tx_buf.msg.length = can_rx_hd.DLC;
-	memcpy(pre_q, usb_tx_buf.packet, 16);
-	pre_q += 16;
+
+	memcpy(pre_q_ptr, usb_tx_buf.packet.payload, PRE_Q_LENGTH);
+
+	pre_q_ptr += PRE_Q_LENGTH;
 	pre_q_cnt++;
-	if (pre_q_cnt == 4)
+	if (pre_q_cnt == 1)
+	{
+		tim3_cnt = 0;
+		HAL_TIM_Base_Start_IT(&htim3);
+	}
+	if (pre_q_cnt == PRE_Q_NUMBER)
 	{
 		enqueue(&Q, (uint8_t*) &pre_queue);
-		pre_q = pre_queue;
+		pre_q_ptr = pre_queue;
 		pre_q_cnt = 0;
-		rx_cnt++;
 	}
 
 	g_can_rx_complete = true;
@@ -257,7 +303,7 @@ void USB_Receive_Callback(uint8_t event_idx, uint8_t state)
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_SET);
 
 	USBD_CUSTOM_HID_HandleTypeDef *hhid = hUsbDeviceFS.pClassData;
-	memcpy(usb_rx_buf.packet, hhid->Report_buf, 64);
+	memcpy(usb_rx_buf.packet.payload, hhid->Report_buf, 64);
 	g_usb_rx_complete = true;
 #ifdef __DEBUG_PRINTF__
 	printf("usb data received!\n");
@@ -266,10 +312,9 @@ void USB_Receive_Callback(uint8_t event_idx, uint8_t state)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-    if(htim->Instance == TIM3)
-    {
-        tim3_cnt++;
-    }
+	if (htim->Instance == TIM3)
+	{
+		tim3_cnt++;
+	}
 }
-
 

@@ -23,7 +23,7 @@ void can_data_logger(void)
 
 		status = dequeue(&Q, &usb_q_buf);
 
-		if (status == q_full)
+		if (status != q_empty)
 		{
 			//while(USB_Send(&usb_q_buf) != COMM_OK);
 			USB_Send(&usb_q_buf);
@@ -113,5 +113,4 @@ static void comm_error(void)
 	USB_Send(&usb_tx_buf);
 }
 #endif
-
 
