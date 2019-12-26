@@ -174,7 +174,7 @@ static void MX_CAN_Init(void)
   /* USER CODE END CAN_Init 0 */
 
   /* USER CODE BEGIN CAN_Init 1 */
-#if 0 // 1Mbps
+#if 1 // 1Mbps
 	  hcan.Instance = CAN;
 	  hcan.Init.Prescaler = 12;
 	  hcan.Init.Mode = CAN_MODE_NORMAL;

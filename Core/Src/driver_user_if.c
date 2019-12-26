@@ -84,7 +84,7 @@ q_status dequeue(queue_t *Q, usb_message_t *tx_msg)
 		 * has been queued in the pre_queue over a period of time.
 		 * send them out and reset the pre_q_cnt
 		 */
-		if ((tim3_cnt > PRE_Q_PERIOD) && (pre_q_cnt != 0))
+		if ((tim3_cnt > PRE_Q_TIMEOUT) && (pre_q_cnt != 0))
 		{
 			//stop & clear Timer
 			TIM32_Stop();

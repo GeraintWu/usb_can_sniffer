@@ -15,7 +15,7 @@
 #define Q_MAX_SIZE      (4)
 #define PRE_Q_NUMBER    (4)
 #define PRE_Q_LENGTH    (USB_PACKET_SIZE/PRE_Q_NUMBER)
-#define PRE_Q_PERIOD    (100)  //ms
+#define PRE_Q_TIMEOUT    (100)  //ms
 
 typedef enum
 {
