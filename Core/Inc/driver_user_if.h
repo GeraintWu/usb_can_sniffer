@@ -12,7 +12,7 @@
 
 #define COMM_TIMEOUT    (1000)
 #define USB_PACKET_SIZE (64)
-#define Q_MAX_SIZE      (4)
+#define Q_MAX_SIZE      (8)
 #define PRE_Q_NUMBER    (4)
 #define PRE_Q_LENGTH    (USB_PACKET_SIZE/PRE_Q_NUMBER)
 #define PRE_Q_TIMEOUT    (100)  //ms

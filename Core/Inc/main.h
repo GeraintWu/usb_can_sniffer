@@ -61,7 +61,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define CUSTOM_HID_FS_BINTERVAL 0x01
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
