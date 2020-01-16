@@ -38,7 +38,6 @@ typedef enum
 }tx_cmd_status_t;
 
 
-void download_app(void);
 void can_data_logger(void);
 
 

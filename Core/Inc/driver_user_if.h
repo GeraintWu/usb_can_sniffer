@@ -17,6 +17,7 @@
 #define PRE_Q_LENGTH    (USB_PACKET_SIZE/PRE_Q_NUMBER)
 #define PRE_Q_TIMEOUT    (100)  //ms
 
+
 typedef enum
 {
 	COMM_OK = 0x00U, COMM_FAIL = 0x01U
@@ -72,6 +73,15 @@ typedef struct
 	uint8_t rear;
 } queue_t;
 
+typedef struct
+{
+	uint8_t *speed;
+	uint32_t prescaler;
+	uint32_t seg1;
+	uint32_t seg2;
+} can_bitrate_config_t ;
+
+
 void message_buffer_init(void);
 uint8_t USB_Send(usb_message_t *message);
 void USB_Receive_Callback(uint8_t event_idx, uint8_t state);
@@ -83,6 +93,7 @@ q_status dequeue(queue_t*, usb_message_t *tx_msg);
 void TIM32_Stop(void);
 
 extern usb_message_t usb_tx_buf;
+extern usb_message_t usb_rx_buf;
 extern queue_t Q;
 extern can_message_t can_tx_buf;
 extern can_message_t can_rx_buf;

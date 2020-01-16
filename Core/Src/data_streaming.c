@@ -7,6 +7,8 @@
 #include "main.h"
 #include "usbd_customhid.h"
 
+
+static void usb_to_can(void);
 //static comm_status message_transport(void);
 //static void comm_error(void);
 
@@ -31,43 +33,37 @@ void can_data_logger(void)
 			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 		}
 
+
+		usb_to_can();
 //         HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 //         for(i=0;i<1600000;i++)
 //            if(g_can_rx_complete == true) break;
 	}
 }
 
-#if 0
-void download_app(void)
+
+void usb_to_can(void)
 {
-	uint32_t i;
-	comm_status ret;
+	//uint32_t i;
+	//comm_status ret;
 
-	while(1)
-	{
-		if(g_usb_rx_complete == true)
-		{
-			g_usb_rx_complete = false;
+    if(g_usb_rx_complete == true)
+    {
+		g_usb_rx_complete = false;
 
-			ret = message_transport();
+    	can_tx_buf.id = usb_rx_buf.msg.cmd;
+    	can_tx_buf.length = (uint8_t) usb_rx_buf.msg.length;
+    	CAN_Send(&can_tx_buf);
 
 #ifdef __DEBUG_PRINTF__
 	       printf("ERROR CODE:%d\n", ret);
 #endif
-
-	       if(ret == COMM_FAIL)
-	       {
-	    	   comm_error();
-	       }
-		} // end of if(g_usb_rx_complete == true)
-
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-        for(i=0;i<1600000;i++)
-        	if(g_usb_rx_complete == true) break;
-
-	} //end of while(1)
+	}
 }
 
+
+
+#if 0
 static comm_status message_transport(void)
 {
 	comm_status status;

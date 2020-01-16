@@ -35,6 +35,7 @@ extern "C" {
 #include "usb_device.h"
 #include "stm32f0xx_hal_tim.h"
 #include <driver_user_if.h>
+#include "sniffer_para_set.h"
 #include <stdbool.h>
 /* USER CODE END Includes */
 
@@ -45,7 +46,8 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+#define CONFIG_MODE  0
+#define CAPTURE_MODE 1
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
