@@ -34,15 +34,23 @@ typedef enum
 
 typedef struct
 {
+#if 1
+	uint8_t mode;
+	uint8_t reserved[2];
+	uint8_t length;
+	uint32_t cmd;   // ID
+#else
 	uint32_t cmd; /*!< command of the message */
 	uint32_t length; /*!< Length of payload in bytes */
+#endif
+
 #if 1
+	uint8_t payload[56];
+#else
 	uint8_t payload[8];
 	uint8_t dummy[48];
-	uint8_t *pdata;
-#else
-	uint8_t data[56];           /*!< Data bytes of the CAN message*/
 #endif
+	uint8_t *pdata;
 } usb_msg_t;
 
 typedef struct

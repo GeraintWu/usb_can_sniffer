@@ -7,8 +7,7 @@
 #include "main.h"
 #include "usbd_customhid.h"
 
-
-static void usb_to_can(void);
+extern uint8_t sniffer_mode;
 //static comm_status message_transport(void);
 //static void comm_error(void);
 
@@ -34,34 +33,33 @@ void can_data_logger(void)
 		}
 
 
-		usb_to_can();
+		//usb_to_can();
+	    if(g_usb_rx_complete == true)
+	    {
+			if(usb_rx_buf.msg.mode != 0x3)
+			{
+				sniffer_mode = CONFIG_MODE;
+				break;
+			}
+
+			g_usb_rx_complete = false;
+
+	    	can_tx_buf.id = usb_rx_buf.msg.cmd;
+	    	can_tx_buf.length = (uint8_t) usb_rx_buf.msg.length;
+	    	CAN_Send(&can_tx_buf);
+
+	#ifdef __DEBUG_PRINTF__
+		       printf("ERROR CODE:%d\n", ret);
+	#endif
+		}
+
+
 //         HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 //         for(i=0;i<1600000;i++)
 //            if(g_can_rx_complete == true) break;
-	}
+
+	} // End of while(1)
 }
-
-
-void usb_to_can(void)
-{
-	//uint32_t i;
-	//comm_status ret;
-
-    if(g_usb_rx_complete == true)
-    {
-		g_usb_rx_complete = false;
-
-    	can_tx_buf.id = usb_rx_buf.msg.cmd;
-    	can_tx_buf.length = (uint8_t) usb_rx_buf.msg.length;
-    	CAN_Send(&can_tx_buf);
-
-#ifdef __DEBUG_PRINTF__
-	       printf("ERROR CODE:%d\n", ret);
-#endif
-	}
-}
-
-
 
 #if 0
 static comm_status message_transport(void)

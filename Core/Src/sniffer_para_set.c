@@ -71,12 +71,12 @@ static void config_filter(void)
 {
 
 	sFilterConfig.FilterBank = 0;
-	sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+	sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
 	sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
 	sFilterConfig.FilterIdHigh = 0x0000;
-	sFilterConfig.FilterIdLow = 0x0000;
+	sFilterConfig.FilterIdLow = (0x0100 <<3) | 0x4;
 	sFilterConfig.FilterMaskIdHigh = 0x0000;
-	sFilterConfig.FilterMaskIdLow = 0x0000;
+	sFilterConfig.FilterMaskIdLow = (0x0200 <<3) | 0x4;
 	sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
 	sFilterConfig.FilterActivation = ENABLE;
 	sFilterConfig.SlaveStartFilterBank = 14;
@@ -103,7 +103,7 @@ static void can_config(usb_message_t cmd,
 	HAL_CAN_DeInit(&hcan);
 
 	//config CAN bitrate
-	can_speed(cmd.packet.payload[4]);
+	can_speed(cmd.msg.payload[0]);
 
 
 	//config CAN filter
@@ -115,8 +115,8 @@ void can_sniffer_config(void)
 {
 	usb_message_t config_cmd;
 
-	g_usb_rx_complete = false;
-	memset(usb_rx_buf.packet.payload, 0, 64);
+	//g_usb_rx_complete = false;
+	//memset(usb_rx_buf.packet.payload, 0, 64);
 
 	while (1)
 	{
@@ -126,12 +126,11 @@ void can_sniffer_config(void)
 		{
 			g_usb_rx_complete = false;
 
-			/* copy the received data to prevent buffer override */
+			/* copy the received data to prevent buffer override when new packet comes in */
 			memcpy(config_cmd.packet.payload, usb_rx_buf.packet.payload, 64);
 
-			if ((config_cmd.packet.payload[1] == 's')
-					&& (config_cmd.packet.payload[2] == 'e')
-					&& (config_cmd.packet.payload[3] == 't'))
+			if ((config_cmd.packet.payload[0] == 0x01) ||
+					(config_cmd.packet.payload[0] == 0x02))
 			{
 				can_config(config_cmd, config_bitrate, config_filter);
 

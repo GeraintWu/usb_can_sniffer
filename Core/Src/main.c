@@ -103,6 +103,8 @@ int main(void)
 	CAN_Filter_Init();
 	message_buffer_init();
 
+	g_usb_rx_complete = false;
+	memset(usb_rx_buf.packet.payload, 0, 64);
 	sniffer_mode = CONFIG_MODE;
 	/* USER CODE END 2 */
 
