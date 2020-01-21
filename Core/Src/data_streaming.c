@@ -22,6 +22,7 @@ void can_data_logger(void)
 	{
 		//g_can_rx_complete = false;
 
+		/* can message -> usb  */
 		status = dequeue(&Q, &usb_q_buf);
 
 		if (status != q_empty)
@@ -33,7 +34,7 @@ void can_data_logger(void)
 		}
 
 
-		//usb_to_can();
+		/* usb message -> can */
 	    if(g_usb_rx_complete == true)
 	    {
 			if(usb_rx_buf.msg.mode != 0x3)

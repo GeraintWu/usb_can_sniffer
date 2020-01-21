@@ -32,7 +32,7 @@ static uint32_t messagebox;
 static uint8_t pre_queue[64];
 static uint8_t *pre_q_ptr;
 static uint8_t pre_q_cnt;
-
+static uint8_t match_idx = 0xFF;
 /*FUNCTION**********************************************************************
  *
  * Function Name : message_buffer_init
@@ -273,7 +273,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &can_rx_hd, can_rx_buf.pdata);
 	usb_tx_buf.msg.cmd = can_rx_hd.ExtId;
 	usb_tx_buf.msg.length = can_rx_hd.DLC;
-
+	match_idx = can_rx_hd.FilterMatchIndex;
 	memcpy(pre_q_ptr, usb_tx_buf.packet.payload, PRE_Q_LENGTH);
 
 	pre_q_ptr += PRE_Q_LENGTH;
