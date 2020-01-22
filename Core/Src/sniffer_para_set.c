@@ -71,11 +71,11 @@ static void config_filter(can_filter_config_t value)
 		else
 			sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
 
-		sFilterConfig.FilterIdHigh = 0x0000;
-		sFilterConfig.FilterIdLow = (0x0100 << 3) | 0x4;
+		sFilterConfig.FilterIdHigh = (value.id1_filter[0] << 8) | value.id1_filter[1];
+		sFilterConfig.FilterIdLow  = (value.id1_filter[2] << 8) | value.id1_filter[3];
 
-		sFilterConfig.FilterMaskIdHigh = 0x0000;
-		sFilterConfig.FilterMaskIdLow = (0x0200 << 3) | 0x4;
+		sFilterConfig.FilterMaskIdHigh = (value.id2_mask_filter[0] << 8) | value.id2_mask_filter[1];
+		sFilterConfig.FilterMaskIdLow  = (value.id2_mask_filter[2] << 8) | value.id2_mask_filter[3];
 	}
 
 	else
