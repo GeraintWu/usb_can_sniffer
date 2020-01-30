@@ -46,7 +46,7 @@ typedef struct
 {
 	uint8_t config_mode;
 	uint8_t bank_number;
-	uint8_t id_mode;
+	uint8_t id_mode;           // mask or list mode
 	uint8_t en;
 	uint8_t reserved[4];
 	uint8_t id1_filter[4];
