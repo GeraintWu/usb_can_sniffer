@@ -1,7 +1,7 @@
 "Core/Src/data_streaming.o"
 "Core/Src/driver_user_if.o"
 "Core/Src/main.o"
-"Core/Src/sniffer_para_set.o"
+"Core/Src/sniffer_config.o"
 "Core/Src/stm32f0xx_hal_msp.o"
 "Core/Src/stm32f0xx_it.o"
 "Core/Src/sysmem.o"

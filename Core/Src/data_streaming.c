@@ -13,10 +13,11 @@ extern uint8_t sniffer_mode;
 
 usb_message_t usb_q_buf;
 volatile uint32_t tx_cnt = 0;
-void can_data_logger(void)
+void message_transport(void)
 {
 	//uint32_t i;
 	q_status status = q_empty;
+	comm_status ret;
 
 	while (1)
 	{
@@ -47,7 +48,20 @@ void can_data_logger(void)
 
 	    	can_tx_buf.id = usb_rx_buf.msg.cmd;
 	    	can_tx_buf.length = (uint8_t) usb_rx_buf.msg.length;
-	    	CAN_Send(&can_tx_buf);
+	    	ret = CAN_Send(&can_tx_buf);
+
+	        memset((uint8_t *)usb_tx_buf.packet.payload, 0, sizeof(usb_message_t));
+	    	usb_tx_buf.msg.mode = txstatus;
+	    	usb_tx_buf.packet.pk_length = USB_PACKET_SIZE;
+	    	if(ret == COMM_OK)
+	    	{
+	    		usb_tx_buf.msg.payload[0] = COMM_OK;
+	    	}
+	    	else
+	    	{
+	    		usb_tx_buf.msg.payload[0] = COMM_FAIL;
+	    	}
+	    	USB_Send(&usb_tx_buf);
 
 	#ifdef __DEBUG_PRINTF__
 		       printf("ERROR CODE:%d\n", ret);

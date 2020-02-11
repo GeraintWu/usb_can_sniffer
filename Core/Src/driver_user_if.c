@@ -271,6 +271,7 @@ void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan)
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &can_rx_hd, can_rx_buf.pdata);
+	usb_tx_buf.msg.mode = txdata;
 	usb_tx_buf.msg.cmd = can_rx_hd.ExtId;
 	usb_tx_buf.msg.length = can_rx_hd.DLC;
 	match_idx = can_rx_hd.FilterMatchIndex;

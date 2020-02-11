@@ -48,7 +48,7 @@ TIM_HandleTypeDef htim3;
 
 /* USER CODE BEGIN PV */
 extern USBD_HandleTypeDef hUsbDeviceFS;
-extern void can_data_logger(void);
+extern void message_transport(void);
 extern usb_message_t usb_rx_buf;
 /* USER CODE END PV */
 
@@ -128,7 +128,7 @@ int main(void)
 			case CAPTURE_MODE:
 
 				HAL_CAN_Start(&hcan);
-				can_data_logger();
+				message_transport();
 
 				break;
 			}

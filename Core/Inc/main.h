@@ -35,7 +35,7 @@ extern "C" {
 #include "usb_device.h"
 #include "stm32f0xx_hal_tim.h"
 #include <driver_user_if.h>
-#include "sniffer_para_set.h"
+#include <sniffer_config.h>
 #include <stdbool.h>
 /* USER CODE END Includes */
 

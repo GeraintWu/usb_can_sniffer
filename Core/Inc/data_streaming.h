@@ -38,7 +38,7 @@ typedef enum
 }tx_cmd_status_t;
 
 
-void can_data_logger(void);
+void message_transport(void);
 
 
 

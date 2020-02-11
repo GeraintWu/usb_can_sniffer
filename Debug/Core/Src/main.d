@@ -32,7 +32,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../USB_DEVICE/App/usb_device.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../USB_DEVICE/Target/usbd_conf.h ../Core/Inc/driver_user_if.h \
- ../Core/Inc/sniffer_para_set.h
+ ../Core/Inc/sniffer_config.h
 
 ../Core/Inc/main.h:
 
@@ -104,4 +104,4 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Core/Inc/driver_user_if.h:
 
-../Core/Inc/sniffer_para_set.h:
+../Core/Inc/sniffer_config.h:

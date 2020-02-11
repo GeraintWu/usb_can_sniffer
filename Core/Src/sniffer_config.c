@@ -1,5 +1,5 @@
 /*
- * sniffer_para_set.c
+ * sniffer_config.c
  *
  *  Created on: Jan 14, 2020
  *      Author: Jingtai_Wu

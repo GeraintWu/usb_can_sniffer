@@ -25,6 +25,11 @@ typedef enum
 
 typedef enum
 {
+	txdata = 0x00U, txstatus = 0x01U
+}usb_tx_mode;
+
+typedef enum
+{
 	q_empty = 0x00U,
 	q_num1 = 0x01U,
 	q_num2 = 0x02U,
