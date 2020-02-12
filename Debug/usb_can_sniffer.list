@@ -39,11 +39,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  17 .debug_line   00011e3b  00000000  00000000  0005c1ad  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    00082eb0  00000000  00000000  0006dfe8  2**0
+ 18 .debug_str    00082ead  00000000  00000000  0006dfe8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000f0e98  2**0
+ 19 .comment      0000007b  00000000  00000000  000f0e95  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00003cf0  00000000  00000000  000f0f14  2**2
+ 20 .debug_frame  00003cf0  00000000  00000000  000f0f10  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -334,9 +334,9 @@ void message_transport(void)
  80002a6:	2100      	movs	r1, #0
  80002a8:	0018      	movs	r0, r3
  80002aa:	f007 fe0c 	bl	8007ec6 <memset>
-	    	usb_tx_buf.msg.mode = txstatus;
+	    	usb_tx_buf.msg.mode = txack;
  80002ae:	4b14      	ldr	r3, [pc, #80]	; (8000300 <message_transport+0xe0>)
- 80002b0:	2201      	movs	r2, #1
+ 80002b0:	2202      	movs	r2, #2
  80002b2:	701a      	strb	r2, [r3, #0]
 	    	usb_tx_buf.packet.pk_length = USB_PACKET_SIZE;
  80002b4:	4b12      	ldr	r3, [pc, #72]	; (8000300 <message_transport+0xe0>)
@@ -1022,7 +1022,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
  8000696:	f001 f8a9 	bl	80017ec <HAL_CAN_GetRxMessage>
 	usb_tx_buf.msg.mode = txdata;
  800069a:	4b25      	ldr	r3, [pc, #148]	; (8000730 <HAL_CAN_RxFifo0MsgPendingCallback+0xac>)
- 800069c:	2200      	movs	r2, #0
+ 800069c:	2201      	movs	r2, #1
  800069e:	701a      	strb	r2, [r3, #0]
 	usb_tx_buf.msg.cmd = can_rx_hd.ExtId;
  80006a0:	4b22      	ldr	r3, [pc, #136]	; (800072c <HAL_CAN_RxFifo0MsgPendingCallback+0xa8>)

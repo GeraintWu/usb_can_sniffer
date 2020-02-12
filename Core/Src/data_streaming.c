@@ -51,7 +51,7 @@ void message_transport(void)
 	    	ret = CAN_Send(&can_tx_buf);
 
 	        memset((uint8_t *)usb_tx_buf.packet.payload, 0, sizeof(usb_message_t));
-	    	usb_tx_buf.msg.mode = txstatus;
+	    	usb_tx_buf.msg.mode = txack;
 	    	usb_tx_buf.packet.pk_length = USB_PACKET_SIZE;
 	    	if(ret == COMM_OK)
 	    	{
