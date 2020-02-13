@@ -4,9 +4,9 @@ driver_user_if.c:77:10:dequeue	16	static
 driver_user_if.c:143:6:TIM32_Stop	8	static
 driver_user_if.c:159:6:CAN_Filter_Init	8	static
 driver_user_if.c:194:9:CAN_Send	24	static
-driver_user_if.c:238:9:USB_Send	24	static
-driver_user_if.c:266:6:HAL_CAN_TxMailbox0CompleteCallback	16	static
-driver_user_if.c:271:6:HAL_CAN_RxFifo0MsgPendingCallback	16	static
-driver_user_if.c:297:6:HAL_CAN_ErrorCallback	16	static
-driver_user_if.c:302:6:USB_Receive_Callback	24	static
-driver_user_if.c:314:6:HAL_TIM_PeriodElapsedCallback	16	static
+driver_user_if.c:248:9:USB_Send	24	static
+driver_user_if.c:276:6:HAL_CAN_TxMailbox0CompleteCallback	16	static
+driver_user_if.c:281:6:HAL_CAN_RxFifo0MsgPendingCallback	16	static
+driver_user_if.c:318:6:HAL_CAN_ErrorCallback	16	static
+driver_user_if.c:323:6:USB_Receive_Callback	24	static
+driver_user_if.c:335:6:HAL_TIM_PeriodElapsedCallback	16	static

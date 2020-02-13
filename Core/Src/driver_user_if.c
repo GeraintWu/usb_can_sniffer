@@ -197,9 +197,19 @@ uint8_t CAN_Send(can_message_t *message)
 	uint32_t tickstart = 0U;
 
 	//can_tx_hd.StdId = 0x321;
-	can_tx_hd.ExtId = message->id;
+	if(message->ide == CAN_ID_EXT)
+	{
+		can_tx_hd.ExtId = message->id;
+		can_tx_hd.IDE = CAN_ID_EXT;
+	}
+	else
+	{
+		can_tx_hd.StdId = message->id;
+		can_tx_hd.IDE = CAN_ID_STD;
+	}
+	//can_tx_hd.ExtId = message->id;
 	can_tx_hd.RTR = CAN_RTR_DATA;
-	can_tx_hd.IDE = CAN_ID_EXT;
+	//can_tx_hd.IDE = CAN_ID_EXT;
 	can_tx_hd.DLC = message->length;
 	can_tx_hd.TransmitGlobalTime = DISABLE;
 
@@ -272,7 +282,18 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &can_rx_hd, can_rx_buf.pdata);
 	usb_tx_buf.msg.mode = txdata;
-	usb_tx_buf.msg.cmd = can_rx_hd.ExtId;
+
+	if(can_rx_hd.IDE == CAN_ID_EXT)
+	{
+	   usb_tx_buf.msg.ide = CAN_ID_EXT;
+	   usb_tx_buf.msg.cmd = can_rx_hd.ExtId;
+	}
+	else
+	{
+		usb_tx_buf.msg.ide = CAN_ID_STD;
+		usb_tx_buf.msg.cmd = can_rx_hd.StdId;
+	}
+
 	usb_tx_buf.msg.length = can_rx_hd.DLC;
 	match_idx = can_rx_hd.FilterMatchIndex;
 	memcpy(pre_q_ptr, usb_tx_buf.packet.payload, PRE_Q_LENGTH);

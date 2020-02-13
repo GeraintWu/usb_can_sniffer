@@ -46,6 +46,7 @@ void message_transport(void)
 
 			g_usb_rx_complete = false;
 
+			can_tx_buf.ide = usb_rx_buf.msg.ide;
 	    	can_tx_buf.id = usb_rx_buf.msg.cmd;
 	    	can_tx_buf.length = (uint8_t) usb_rx_buf.msg.length;
 	    	ret = CAN_Send(&can_tx_buf);

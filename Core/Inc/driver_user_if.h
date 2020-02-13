@@ -40,7 +40,8 @@ typedef enum
 typedef struct
 {
 	uint8_t mode;
-	uint8_t reserved[2];
+	uint8_t reserved;
+	uint8_t ide;
 	uint8_t length;
 	uint32_t cmd;   // ID
 	uint8_t payload[56];
@@ -72,7 +73,8 @@ typedef union
 
 typedef struct
 {
-	uint32_t cs; /*!< Code and Status*/
+	//uint32_t cs; /*!< Code and Status*/
+	uint8_t ide; /*!< Code and Status*/
 	uint32_t id; /*!< ID of the message */
 	//uint8_t data[USB_PACKET_SIZE];  /*!< Data bytes of the CAN message*/
 	uint8_t *pdata;
