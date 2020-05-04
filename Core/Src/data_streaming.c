@@ -31,7 +31,7 @@ void message_transport(void)
 			//while(USB_Send(&usb_q_buf) != COMM_OK);
 			USB_Send(&usb_q_buf);
 			tx_cnt++;
-			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_12);
 		}
 
 

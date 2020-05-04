@@ -36,6 +36,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 usb_can_sniffer.list \
 
+OBJCOPY_BIN += \
+usb_can_sniffer.bin \
+
 
 # All Target
 all: usb_can_sniffer.elf secondary-outputs
@@ -56,12 +59,17 @@ usb_can_sniffer.list: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+usb_can_sniffer.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "usb_can_sniffer.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
 	-$(RM) *
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 .PHONY: all clean dependents
 .SECONDARY:
